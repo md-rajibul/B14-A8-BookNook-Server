@@ -11,7 +11,9 @@ const port = Number(process.env.PORT || 5000);
 const clientURL = process.env.CLIENT_URL || "http://localhost:3000";
 
 app.use(cors({ origin: clientURL, credentials: true }));
-app.all("/api/auth/*splat", toNodeHandler(auth));
+
+app.all(/^\/api\/auth\/.*$/, toNodeHandler(auth));
+  
 app.use(express.json({ limit: "1mb" }));
 
 function normalizeBook(body) {
