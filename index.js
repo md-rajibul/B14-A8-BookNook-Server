@@ -12,7 +12,16 @@ const clientURL = process.env.CLIENT_URL || "http://localhost:3000";
 
 app.use(cors({ origin: clientURL, credentials: true }));
 
-app.all(/^\/api\/auth\/.*$/, toNodeHandler(auth));
+const authHandler = toNodeHandler(auth);
+
+app.use((req, res, next) => {
+  if (!req.path.startsWith("/api/auth/")) {
+    return next();
+  }
+
+  console.log("AUTH REQUEST:", req.method, req.originalUrl);
+  return authHandler(req, res);
+});
   
 app.use(express.json({ limit: "1mb" }));
 
